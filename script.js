@@ -8,6 +8,7 @@ if (form) {
   const roleRadios = Array.from(form.querySelectorAll('input[name="role"]'));
   const roleOtherInput = document.getElementById('role-other-text');
   const roleOtherWrapper = document.getElementById('role-other-wrapper');
+  const timezoneSelect = document.getElementById('timezone');
 
   const errorMap = new Map();
   form.querySelectorAll('.field-error').forEach((node) => {
@@ -137,7 +138,7 @@ if (form) {
   const validateForm = (showErrors = true) => {
     const roleValid = validateRole(showErrors);
     const expValid = validateSelect('experience', 'Select your years of experience.', showErrors);
-    const timezoneValid = validateRequiredText('timezone', 'Provide your country and/or time zone.', showErrors);
+    const timezoneValid = validateSelect('timezone', 'Select your time zone.', showErrors);
     const nameValid = validateRequiredText('name', 'Please enter your name.', showErrors);
     const emailValid = validateEmail(showErrors);
     return roleValid && expValid && timezoneValid && nameValid && emailValid;
@@ -183,6 +184,7 @@ if (form) {
   });
 
   Object.values(controls).forEach((control) => {
+    if (!control) return; // guard missing elements
     control.addEventListener('input', () => {
       if (control === controls.email) {
         validateEmail(false);
@@ -200,12 +202,87 @@ if (form) {
     });
   });
 
-  roleOtherInput.addEventListener('input', () => {
-    if (roleOtherInput.value.trim()) {
-      clearError('role-other');
+  if (roleOtherInput) {
+    roleOtherInput.addEventListener('input', () => {
+      if (roleOtherInput.value.trim()) {
+        clearError('role-other');
+      }
+      updateSubmitState();
+    });
+  }
+
+  // Time zone population (Outlook-style labels)
+  // Primary source: Maintained list with text like "(UTC+05:45) Kathmandu"
+  const TZ_LIST_API = 'https://raw.githubusercontent.com/dmfilipenko/timezones.json/master/timezones.json';
+  // Fallback source: Plain IANA list
+  const TZ_LIST_FALLBACK = 'https://worldtimeapi.org/api/timezone';
+
+  function setSelectOptions(select, items, placeholder = 'Select an option') {
+    select.innerHTML = '';
+    const ph = document.createElement('option');
+    ph.value = '';
+    ph.textContent = placeholder;
+    ph.disabled = true;
+    ph.selected = true;
+    select.appendChild(ph);
+    items.forEach(({ value, label }) => {
+      const opt = document.createElement('option');
+      opt.value = value;
+      opt.textContent = label || value;
+      select.appendChild(opt);
+    });
+  }
+
+  async function loadAllTimezones() {
+    try {
+      // Try the Outlook-style dataset first
+      const res = await fetch(TZ_LIST_API, { cache: 'force-cache' });
+      if (!res.ok) throw new Error('tz list status ' + res.status);
+      const data = await res.json(); // array of objects
+      let items = data
+        .filter((tz) => tz && tz.value && tz.text)
+        .sort((a, b) => {
+          const ao = typeof a.offset === 'number' ? a.offset : 0;
+          const bo = typeof b.offset === 'number' ? b.offset : 0;
+          if (ao !== bo) return ao - bo;
+          return a.text.localeCompare(b.text);
+        })
+        .map((tz) => ({ value: tz.value, label: tz.text }));
+      if (!items.length) throw new Error('Empty TZ items');
+      setSelectOptions(timezoneSelect, items, 'Select a time zone');
+    } catch (e) {
+      console.error('Failed to load time zones', e);
+      try {
+        // Fallback to plain IANA names if the curated list fails
+        const res2 = await fetch(TZ_LIST_FALLBACK, { cache: 'force-cache' });
+        if (!res2.ok) throw new Error('fallback tz list status ' + res2.status);
+        const zones = await res2.json(); // array of strings
+        const items = zones
+          .filter((z) => typeof z === 'string')
+          .sort((a, b) => a.localeCompare(b))
+          .map((z) => ({ value: z, label: z.replaceAll('_', ' ') }));
+        setSelectOptions(timezoneSelect, items, 'Select a time zone');
+        timezoneSelect.disabled = false;
+      } catch (e2) {
+        // Final minimal fallback to ensure the form is usable
+        console.error('Failed to load fallback time zones', e2);
+        const fallback = [
+          'UTC', 'Asia/Kathmandu', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles',
+          'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Asia/Kolkata', 'Asia/Shanghai', 'Asia/Tokyo',
+          'Australia/Sydney'
+        ].map((z) => ({ value: z, label: z.replaceAll('_', ' ') }));
+        setSelectOptions(timezoneSelect, fallback, 'Select a time zone');
+        timezoneSelect.disabled = false;
+      }
     }
-    updateSubmitState();
-  });
+  }
+  if (timezoneSelect) {
+    loadAllTimezones();
+    timezoneSelect.addEventListener('change', () => {
+      clearError('timezone');
+      updateSubmitState();
+    });
+  }
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();

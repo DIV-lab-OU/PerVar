@@ -207,8 +207,10 @@
               </div>
 
               <div class="field-group">
-                <label for="timezone">Country / Time zone<span aria-hidden="true">*</span></label>
-                <input type="text" id="timezone" name="timezone" placeholder="e.g., US / America/Chicago" required aria-describedby="error-timezone">
+                <label for="timezone">Time zone<span aria-hidden="true">*</span></label>
+                <select id="timezone" name="timezone" required aria-describedby="error-timezone">
+                  <option value="" disabled selected>Loading time zones…</option>
+                </select>
                 <p class="field-error" id="error-timezone" hidden></p>
               </div>
             </fieldset>
