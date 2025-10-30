@@ -1,75 +1,5 @@
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycby6opSWI8r_t1sz2tVPkAzRzSq1mA2jfzNW-ja9IbjyLnxRBa07C1rHcohbrtH-Di15Sg/exec';
 
-// Insights (public discussions) rendering
-const insightsList = document.getElementById('insights-list');
-const insightsStatus = document.getElementById('insights-status');
-
-const escapeHTML = (str) => String(str)
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/"/g, '&quot;')
-  .replace(/'/g, '&#39;');
-
-function getInitials(name) {
-  const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) return '?';
-  const first = parts[0][0] || '';
-  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
-  return (first + last).toUpperCase();
-}
-
-async function loadInsights(limit = 20) {
-  if (!insightsList) return;
-  try {
-    if (insightsStatus) insightsStatus.textContent = 'Loading…';
-    const url = `${ENDPOINT}?action=discussions&limit=${encodeURIComponent(limit)}`;
-    const res = await fetch(url, { method: 'GET' });
-    if (!res.ok) throw new Error(`Status ${res.status}`);
-    const text = await res.text();
-    let data = null;
-    try { data = JSON.parse(text); } catch (_) { data = null; }
-    const items = Array.isArray(data)
-      ? data
-      : (data && Array.isArray(data.items)) ? data.items : [];
-    insightsList.innerHTML = '';
-    if (!items.length) {
-      if (insightsStatus) insightsStatus.textContent = 'No insights yet — be the first to share a thought!';
-      return;
-    }
-    const frag = document.createDocumentFragment();
-    items.forEach((item) => {
-      const text = typeof item === 'string' ? item : (item && (item.discussion || item.text || ''));
-      const name = (item && (item.name || item.author || '')) || 'Anonymous';
-      const trimmed = (text || '').trim();
-      if (!trimmed) return;
-      const li = document.createElement('li');
-      li.className = 'feed-item';
-      const avatar = document.createElement('div');
-      avatar.className = 'feed-avatar';
-      avatar.textContent = getInitials(name);
-      const body = document.createElement('div');
-      body.className = 'feed-body';
-      const meta = document.createElement('div');
-      meta.className = 'feed-meta';
-      meta.textContent = name;
-      const bubble = document.createElement('div');
-      bubble.className = 'feed-text';
-      bubble.innerHTML = `${escapeHTML(trimmed)}`;
-      body.appendChild(meta);
-      body.appendChild(bubble);
-      li.appendChild(avatar);
-      li.appendChild(body);
-      frag.appendChild(li);
-    });
-    insightsList.appendChild(frag);
-    if (insightsStatus) insightsStatus.textContent = '';
-  } catch (e) {
-    if (insightsStatus) insightsStatus.textContent = 'Insights are unavailable right now.';
-    // Leave list untouched on failure
-  }
-}
-
 const form = document.getElementById('interest-form');
 
 if (form) {
@@ -313,30 +243,6 @@ if (form) {
       success.setAttribute('role', 'status');
       success.innerHTML = '<p><strong>Thanks!</strong> We’ve received your information. We will contact you to confirm a 30-minute time slot. Interview in early december.</p>';
       form.replaceWith(success);
-
-      // Ensure the visitor sees their own discussion immediately
-      const discussion = (payload.discussion || '').trim();
-      const displayName = (payload.name || '').trim() || 'You';
-      if (discussion && insightsList) {
-        const li = document.createElement('li');
-        li.className = 'feed-item';
-        const avatar = document.createElement('div');
-        avatar.className = 'feed-avatar';
-        avatar.textContent = getInitials(displayName);
-        const body = document.createElement('div');
-        body.className = 'feed-body';
-        const meta = document.createElement('div');
-        meta.className = 'feed-meta';
-        meta.textContent = displayName;
-        const bubble = document.createElement('div');
-        bubble.className = 'feed-text';
-        bubble.innerHTML = `${escapeHTML(discussion)}`;
-        body.appendChild(meta);
-        body.appendChild(bubble);
-        li.appendChild(avatar);
-        li.appendChild(body);
-        insightsList.prepend(li);
-      }
     } catch (error) {
       console.error(error);
       showStatus('We could not submit your interest right now. Please retry in a moment or email pandey@ou.edu.', 'error');
@@ -349,6 +255,4 @@ if (form) {
   updateRoleOtherVisibility();
   updateSubmitState();
 }
-
-// Load public insights on page load
-loadInsights(20);
+ 

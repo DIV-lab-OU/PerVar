@@ -237,15 +237,7 @@ p {
   border: 1px solid var(--color-border);
 }
 
-/* Newsfeed insights */
-.insights .info-card { background: var(--color-surface); border: 1px solid var(--color-border); }
-.insights .info-card .compact-note { color: var(--color-text-muted); }
-.feed-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
-.feed-item { display: grid; grid-template-columns: 40px 1fr; gap: 0.75rem; align-items: start; }
-.feed-avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 1px solid var(--color-border); background: #f3ece2; display: grid; place-items: center; font-weight: 700; color: var(--color-accent); }
-.feed-body { display: grid; gap: 0.35rem; }
-.feed-meta { font-size: 0.9rem; color: var(--color-text-muted); }
-.feed-text { background: #fff; border: 1px solid var(--color-border); border-radius: 10px; padding: 0.6rem 0.75rem; line-height: 1.35; color: var(--color-ink); }
+/* insights feed removed */
 
 .icon-list,
 .bullet-list {
@@ -280,7 +272,6 @@ p {
 }
 
 .about .container,
-.insights .container,
 .why .container,
 .details .container,
 .form-section .container {
@@ -439,11 +430,7 @@ input[type="radio"] {
 }
 
 /* Compact helper for small status/notes */
-.compact-note {
-  margin: 0.25rem 0 0.5rem 0;
-  color: var(--color-text-muted);
-  font-size: 0.95rem;
-}
+/* compact-note removed with insights */
 
 .sr-only {
   position: absolute;
@@ -468,7 +455,6 @@ input[type="radio"] {
   }
 
   .about .container,
-  .insights .container,
   .why .container,
   .details .container,
   .form-section .container {
