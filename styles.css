@@ -52,15 +52,28 @@ img {
   object-fit: cover;
 }
 
-a {
+a,
+a:link,
+a:visited {
   color: var(--color-accent);
   text-decoration: none;
 }
 
 a:hover,
-a:focus-visible {
+a:focus-visible,
+a:active {
   text-decoration: none;
   color: #a21d20;
+}
+
+/* Ensure nav links never show underlines */
+.site-nav a,
+.site-nav a:link,
+.site-nav a:visited,
+.site-nav a:hover,
+.site-nav a:focus-visible,
+.site-nav a:active {
+  text-decoration: none;
 }
 
 h1, h2, h3 {
