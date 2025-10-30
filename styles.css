@@ -23,7 +23,7 @@
   --font-heading: clamp(1.6rem, 1.35rem + 1.2vw, 2.4rem);
   --font-h2: clamp(1.25rem, 1.1rem + 0.7vw, 1.8rem);
   --font-h3: clamp(1.05rem, 1rem + 0.4vw, 1.3rem);
-  --max-width: min(64rem, 92vw);
+  --max-width: min(72rem, 96vw);
   font-family: Inter, "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }
 
@@ -171,19 +171,21 @@ p {
 .hero-content {
   display: grid;
   gap: var(--space-2);
-  justify-items: start;
+  justify-items: center;
+  text-align: center;
+  /* Keep hero media/text widths aligned */
+  --hero-width: min(48rem, 100%);
 }
 
 .hero-figure {
-  margin: 0;
-  width: min(34rem, 100%);
+  margin: 0 auto;
+  width: var(--hero-width);
 }
 
 .hero-abstract {
-  max-width: 62ch;
-  margin-bottom: 0;
-  text-align: justify;
-  text-justify: inter-word;
+  width: var(--hero-width);
+  margin: 0 auto;
+  text-align: left;
 }
 
 .hero-cta {
@@ -446,13 +448,22 @@ input[type="radio"] {
 
 @media (min-width: 48rem) {
   .hero-content {
-    max-width: 60rem;
+    max-width: none;
     margin: 0 auto;
+    --hero-width: min(56rem, 100%);
+  }
+  /* Make study details points a responsive grid */
+  .details .icon-list {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-2) var(--space-3);
   }
 
-  .hero-figure {
-    width: min(36rem, 60%);
+  /* Slightly larger spacing inside each item on wider screens */
+  .details .icon-list li {
+    gap: var(--space-3);
   }
+
+  .hero-figure { width: var(--hero-width); }
 
   .about .container,
   .why .container,
