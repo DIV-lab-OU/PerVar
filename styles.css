@@ -107,6 +107,66 @@ p {
   padding: 0 var(--space-3);
 }
 
+/* Page title spanning full width above split layout */
+.page-title {
+  margin: var(--space-3) 0 var(--space-2) 0;
+  font-size: clamp(2rem, 2vw, 3.2rem);
+  line-height: 1.1;
+  text-align: left;
+}
+
+/* Split layout: details (left) + hero (right) */
+.overview-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  align-items: start;
+  padding-top: 0;
+  padding-bottom: var(--space-3);
+}
+
+.overview-split .split-left { display: block; }
+.overview-split .split-right { display: block; }
+
+/* Visual polish: nudge the left column down on wide screens and cardify the details list */
+@media (min-width: 1000px) {
+  .split-left {
+    /* Remove the extra padding-top since title is now outside */
+    padding-top: 0;
+  }
+
+  .details .icon-list {
+    background: #fff; /* keep card white on cream background */
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 10px 30px rgba(15,20,25,0.06);
+    border: 1px solid rgba(15,20,25,0.04);
+  }
+}
+
+/* Align hero content on wider screens */
+@media (min-width: 900px) {
+  .split-right .hero {
+    text-align: left;
+  }
+  .split-right .hero-figure {
+    margin: 0; /* align the image with the left edge */
+    width: var(--hero-width);
+  }
+  .split-right .hero-abstract {
+    margin-left: 0;
+    margin-right: 0;
+    width: var(--hero-width);
+  }
+}
+
+.hero-why {
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+  margin-bottom: var(--space-2);
+}
+
 .skip-link {
   position: absolute;
   top: var(--space-2);
@@ -295,11 +355,30 @@ p {
 }
 
 /* Team grid */
-.team-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: var(--space-3); }
+team-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: var(--space-3); }
 .person { margin: 0; display: grid; grid-template-columns: 64px 1fr; gap: 0.75rem; align-items: center; }
 .person img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 1px solid var(--color-border); }
 .person figcaption { display: grid; gap: 0.25rem; }
 .person figcaption span { color: var(--color-text-muted); font-size: 0.95rem; }
+
+/* researcher email link styling */
+.person .person-email {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+.person .person-email:hover,
+.person .person-email:focus-visible {
+  text-decoration: underline;
+  color: var(--color-ink);
+}
+
+/* Improve team spacing and left-column bottom spacing */
+.team-grid { align-items: center; }
+.person { display: flex; align-items: center; gap: 0.75rem; }
+.split-left > .about { margin-top: 1rem; margin-bottom: 2rem; }
 
 .form-section form {
   background: var(--color-surface);
@@ -494,6 +573,10 @@ input[type="radio"] {
 
   .site-header {
     position: static;
+  }
+
+  .overview-split {
+    grid-template-columns: 1fr;
   }
 }
 
