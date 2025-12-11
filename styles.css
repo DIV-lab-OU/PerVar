@@ -122,11 +122,18 @@ p {
   gap: var(--space-4);
   align-items: start;
   padding-top: 0;
-  padding-bottom: var(--space-3);
+  /* minimize bottom spacing so the overview and form sit close together */
+  padding-bottom: 0;
 }
 
 .overview-split .split-left { display: block; }
 .overview-split .split-right { display: block; }
+
+/* Swap left/right columns on wider screens so the hero appears on the left */
+@media (min-width: 48rem) {
+  .overview-split .split-left { grid-column: 2; }
+  .overview-split .split-right { grid-column: 1; }
+}
 
 /* Visual polish: nudge the left column down on wide screens and cardify the details list */
 @media (min-width: 1000px) {
@@ -238,7 +245,7 @@ p {
 }
 
 .hero {
-  padding: var(--space-3) 0 var(--space-2);
+  padding: var(--space-3) 0 0; /* remove bottom padding to bring form closer */
 }
 
 .hero-content {
@@ -258,7 +265,12 @@ p {
 .hero-abstract {
   width: var(--hero-width);
   margin: 0 auto;
-  text-align: left;
+  text-align: justify;
+  text-justify: inter-word;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  text-align-last: left;
 }
 
 .hero-cta {
@@ -294,7 +306,17 @@ p {
 .why,
 .about,
 .form-section {
-  padding: var(--space-3) 0;
+  padding: 0; /* remove form-section padding so it sits directly under overview */
+}
+
+/* Remove top margin on the form title and reduce spacing inside container */
+.form-section h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+.form-section .container {
+  padding-top: 0;
+  padding-bottom: 0.5rem;
 }
 
 .details h2,
@@ -424,6 +446,12 @@ legend {
 .field-group label,
 .field-label {
   font-weight: 600;
+  color: var(--color-ink);
+}
+
+/* Make radio/option labels (role choices) regular weight so they're not bold */
+.option-group label {
+  font-weight: 400;
   color: var(--color-ink);
 }
 
@@ -562,6 +590,15 @@ input[type="radio"] {
   .details .container,
   .form-section .container {
     gap: var(--space-3);
+  }
+
+  /* Slightly increase gap between columns and nudge right column further right for visual separation */
+  .overview-split {
+    gap: calc(var(--space-4) + 1rem);
+  }
+  .overview-split .split-left {
+    /* nudge the right column (details) to the right for extra breathing room */
+    transform: translateX(0.8rem);
   }
 }
 
