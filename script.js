@@ -10,6 +10,18 @@ if (form) {
   const roleOtherWrapper = document.getElementById('role-other-wrapper');
   const timezoneSelect = document.getElementById('timezone');
 
+  // Defensive: ensure the 'Other' free-text field is hidden on initial load
+  if (roleOtherWrapper) {
+    roleOtherWrapper.hidden = true;
+    roleOtherWrapper.setAttribute('aria-hidden', 'true');
+  }
+  if (roleOtherInput) {
+    roleOtherInput.required = false;
+    roleOtherInput.value = '';
+  }
+  // mark all radios as collapsed initially
+  roleRadios.forEach((r) => r.setAttribute('aria-expanded', 'false'));
+
   const errorMap = new Map();
   form.querySelectorAll('.field-error').forEach((node) => {
     const key = node.id.replace('error-', '');
@@ -175,13 +187,42 @@ if (form) {
     submitButton.textContent = loading ? 'Submitting…' : 'Submit interest';
   };
 
+  // Show/hide the 'Please describe your role' input only when the user actively clicks the 'Other' radio.
+  const roleOtherRadio = form.querySelector('input[id="role-other"]');
   roleRadios.forEach((radio) => {
+    // keep validation reactive on change but do not toggle the other field here
     radio.addEventListener('change', () => {
-      updateRoleOtherVisibility();
       validateRole(false);
       updateSubmitState();
     });
+    // clicking any non-Other radio should hide the extra field
+    if (radio !== roleOtherRadio) {
+      radio.addEventListener('click', (e) => {
+        // Only respond to actual pointer clicks (mouse/touch). Ignore keyboard-initiated clicks.
+        if (e && typeof e.detail === 'number' && e.detail === 0) return;
+        roleOtherWrapper.hidden = true;
+        roleOtherWrapper.setAttribute('aria-hidden', 'true');
+        roleOtherInput.required = false;
+        roleOtherInput.value = '';
+        roleRadios.forEach((r) => r.setAttribute('aria-expanded', 'false'));
+        clearError('role-other');
+      });
+    }
   });
+
+  if (roleOtherRadio) {
+    roleOtherRadio.addEventListener('click', (e) => {
+      // Only show the extra input on pointer clicks (mouse/touch), not keyboard selection.
+      if (e && typeof e.detail === 'number' && e.detail === 0) return;
+      roleOtherWrapper.hidden = false;
+      roleOtherWrapper.setAttribute('aria-hidden', 'false');
+      roleOtherInput.required = true;
+      roleOtherRadio.setAttribute('aria-expanded', 'true');
+      updateSubmitState();
+      // move focus to the text input for convenience
+      setTimeout(() => roleOtherInput.focus(), 50);
+    });
+  }
 
   Object.values(controls).forEach((control) => {
     if (!control) return; // guard missing elements
@@ -329,7 +370,6 @@ if (form) {
     }
   });
 
-  updateRoleOtherVisibility();
   updateSubmitState();
 }
  
