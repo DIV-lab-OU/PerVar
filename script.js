@@ -4,7 +4,14 @@ const form = document.getElementById('interest-form');
 
 if (form) {
   const submitButton = form.querySelector('button[type="submit"]');
-  const statusRegion = document.getElementById('form-status');
+  let statusRegion = document.getElementById('form-status');
+  // If the page doesn't include a status region, create one above the form for feedback.
+  if (!statusRegion) {
+    statusRegion = document.createElement('div');
+    statusRegion.id = 'form-status';
+    statusRegion.className = 'form-status';
+    form.insertBefore(statusRegion, form.firstChild);
+  }
   const roleRadios = Array.from(form.querySelectorAll('input[name="role"]'));
   const roleOtherInput = document.getElementById('role-other-text');
   const roleOtherWrapper = document.getElementById('role-other-wrapper');
@@ -54,6 +61,7 @@ if (form) {
   const getSelectedRole = () => roleRadios.find((radio) => radio.checked);
 
   const showStatus = (message, type = '') => {
+    if (!statusRegion) return; // gracefully no-op if no status region in DOM
     statusRegion.textContent = message;
     statusRegion.classList.remove('success', 'error');
     if (type) {
