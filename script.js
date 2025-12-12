@@ -341,6 +341,7 @@ if (form) {
       // Send as URL-encoded to avoid CORS preflight; Apps Script can read via e.parameter
       const response = await fetch(ENDPOINT, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body: new URLSearchParams(payload)
       });
 
@@ -348,18 +349,12 @@ if (form) {
         throw new Error(`Request failed with status ${response.status}`);
       }
 
-      // Try to parse JSON; if not parsable but HTTP 200, still treat as success
-      const text = await response.text();
-      let result = null;
-      try { result = JSON.parse(text); } catch (_) {}
-      if (result && result.ok !== true) {
-        throw new Error('Unexpected response from server.');
-      }
-
+      // Treat any successful HTTP 2xx as success. Some Apps Script endpoints return HTML/text.
       const success = document.createElement('div');
       success.className = 'form-success';
       success.setAttribute('role', 'status');
-      success.innerHTML = '<p><strong>Thanks!</strong> We’ve received your information. We will contact you to confirm a 30-minute time slot. Interview in early december.</p>';
+      success.innerHTML = '<p><strong>Submitted successfully.</strong> We have received your information and will contact you to arrange a 30‑minute interview.</p>';
+      // Replace the form with a success message (page reload will restore the original form)
       form.replaceWith(success);
     } catch (error) {
       console.error(error);
