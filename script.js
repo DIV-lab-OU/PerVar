@@ -361,7 +361,7 @@ if (form) {
       const success = document.createElement('div');
       success.className = 'form-success';
       success.setAttribute('role', 'status');
-      success.innerHTML = '<p><strong>Submitted successfully.</strong> We have received your information and will contact you to arrange a 30‑minute interview.</p>';
+      success.innerHTML = '<p><strong>Submitted successfully.</strong> We have received your information and will contact you to arrange a 30‑minute interview.</p><p><a href="https://calendly.com/pandey-ou/pervar-interview-study" target="_blank" rel="noopener noreferrer" class="button primary">Schedule a 30‑minute interview</a></p>';
       // Replace the form with a success message (page reload will restore the original form)
       form.replaceWith(success);
     } catch (error) {
