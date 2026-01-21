@@ -413,16 +413,12 @@ team-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1
 
 .form-success {
   background: var(--color-surface);
-  padding: var(--space-4);
+  padding: var(--space-5);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-soft);
-  font-size: 1.05em;
-  line-height: 1.6;
-  color: var(--color-text-muted);
-}
-
-.form-success strong {
-  color: var(--color-ink);
+  display: grid;
+  place-items: center;
+  text-align: center;
 }
 
 fieldset {
