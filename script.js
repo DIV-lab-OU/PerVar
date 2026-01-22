@@ -47,11 +47,16 @@ if (form) {
 
   const updateRoleOtherVisibility = () => {
     const selected = getSelectedRole();
-    const isOther = selected && selected.value === 'Other';
+    const isOther = selected && (selected.value === 'Other' || selected.value === 'Other (entry)');
     roleOtherWrapper.hidden = !isOther;
   roleOtherWrapper.setAttribute('aria-hidden', String(!isOther));
     roleOtherInput.required = isOther;
-    roleRadios.forEach((radio) => radio.setAttribute('aria-expanded', String(isOther && radio.value === 'Other')));
+    roleRadios.forEach((radio) =>
+      radio.setAttribute(
+        'aria-expanded',
+        String(isOther && (radio.value === 'Other' || radio.value === 'Other (entry)'))
+      )
+    );
     if (!isOther) {
       roleOtherInput.value = '';
       clearError('role-other');
@@ -107,7 +112,7 @@ if (form) {
       return false;
     }
     clearError('role');
-    if (selected.value === 'Other') {
+    if (selected.value === 'Other' || selected.value === 'Other (entry)') {
       if (!roleOtherInput.value.trim()) {
         if (showErrors) showError('role-other', 'Please describe your role when "Other" is selected.');
         return false;
@@ -157,11 +162,12 @@ if (form) {
 
   const validateForm = (showErrors = true) => {
     const roleValid = validateRole(showErrors);
+    const orgValid = validateRequiredText('organization', 'Please enter your company/affiliation.', showErrors);
     const expValid = validateSelect('experience', 'Select your years of experience.', showErrors);
     const timezoneValid = validateSelect('timezone', 'Select your time zone.', showErrors);
     const nameValid = validateRequiredText('name', 'Please enter your name.', showErrors);
     const emailValid = validateEmail(showErrors);
-    return roleValid && expValid && timezoneValid && nameValid && emailValid;
+    return roleValid && orgValid && expValid && timezoneValid && nameValid && emailValid;
   };
 
   const updateSubmitState = () => {
@@ -181,7 +187,7 @@ if (form) {
       }
     }
     const selected = getSelectedRole();
-    if (selected && selected.value === 'Other') {
+    if (selected && (selected.value === 'Other' || selected.value === 'Other (entry)')) {
       payload.roleOther = roleOtherInput.value.trim();
     }
     payload.nonce = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;

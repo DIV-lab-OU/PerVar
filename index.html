@@ -165,8 +165,8 @@
               </div>
 
               <div class="field-group">
-                <label for="organization">Company/Affiliation</label>
-                <input type="text" id="organization" name="organization" aria-describedby="error-organization">
+                <label for="organization">Company/Affiliation<span aria-hidden="true">*</span></label>
+                <input type="text" id="organization" name="organization" required aria-describedby="error-organization">
                 <p class="field-error" id="error-organization" hidden></p>
               </div>
 
@@ -174,28 +174,28 @@
                 <span class="field-label">Role<span aria-hidden="true">*</span></span>
                 <div class="option-group" role="radiogroup" aria-label="Role">
                   <div class="option">
-                    <input type="radio" name="role" id="role-professor" value="Professor/Faculty (Visualization/HCI)" required>
-                    <label for="role-professor">Researcher - Industry</label>
+                    <input type="radio" name="role" id="role-researcher-industry" value="Researcher - Industry" required>
+                    <label for="role-researcher-industry">Researcher - Industry</label>
                   </div>
                   <div class="option">
-                    <input type="radio" name="role" id="role-phd" value="PhD Student/Postdoc (Visualization/HCI)" required>
-                    <label for="role-phd">Researcher - Academic</label>
+                    <input type="radio" name="role" id="role-researcher-academic" value="Researcher - Academic" required>
+                    <label for="role-researcher-academic">Researcher - Academic</label>
                   </div>
                   <div class="option">
-                    <input type="radio" name="role" id="role-phd" value="PhD Student/Postdoc (Visualization/HCI)" required>
-                    <label for="role-phd">Researcher - Government</label>
+                    <input type="radio" name="role" id="role-researcher-government" value="Researcher - Government" required>
+                    <label for="role-researcher-government">Researcher - Government</label>
                   </div>
                   <div class="option">
-                    <input type="radio" name="role" id="role-data-analyst" value="Data Analyst" required>
-                    <label for="role-data-analyst">Practitioner - Data Analyst/Scientist</label>
+                    <input type="radio" name="role" id="role-practitioner-data" value="Practitioner - Data Analyst/Scientist" required>
+                    <label for="role-practitioner-data">Practitioner - Data Analyst/Scientist</label>
                   </div>
                   <div class="option">
-                    <input type="radio" name="role" id="role-designer" value="Visualization Designer" required>
-                    <label for="role-designer">Practitioner - Designer/Engineer</label>
+                    <input type="radio" name="role" id="role-practitioner-designer" value="Practitioner - Designer/Engineer" required>
+                    <label for="role-practitioner-designer">Practitioner - Designer/Engineer</label>
                   </div>
                   <div class="option">
-                    <input type="radio" name="role" id="role-other" value="Other" required aria-controls="role-other-text" aria-expanded="false">
-                    <label for="role-other">Other</label>
+                    <input type="radio" name="role" id="role-other" value="Other (entry)" required aria-controls="role-other-text" aria-expanded="false">
+                    <label for="role-other">Other (entry)</label>
                   </div>
                 </div>
                 <div class="field-extra" id="role-other-wrapper" hidden>
