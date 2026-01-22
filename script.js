@@ -363,19 +363,15 @@ if (form) {
       success.setAttribute('role', 'status');
       success.innerHTML = '<a href="https://calendly.com/pandey-ou/pervar-interview-study" target="_blank" rel="noopener noreferrer" class="button primary">Schedule a 30-minute interview</a>';
 
-      // Hide the rest of the page content so the post-submit view is only the scheduling button.
-      const toHideSelectors = ['.site-header', '.page-title', '.overview-split', '.site-footer'];
-      toHideSelectors.forEach((selector) => {
-        document.querySelectorAll(selector).forEach((el) => {
-          el.hidden = true;
-          el.setAttribute('aria-hidden', 'true');
-        });
-      });
-
-      // Replace the form with a success message (page reload will restore the original form)
-      form.replaceWith(success);
-      // Bring the button into view.
-      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Schedule-only mode: show *only* the scheduling button after submission.
+      document.body.classList.add('schedule-only');
+      const main = document.getElementById('main-content');
+      if (main) {
+        main.replaceChildren(success);
+      } else {
+        // Fallback: if the main container is missing, still replace the form.
+        form.replaceWith(success);
+      }
     } catch (error) {
       console.error(error);
       showStatus('We could not submit your interest right now. Please retry in a moment or email pandey@ou.edu.', 'error');
